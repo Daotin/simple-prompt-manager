@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Simple Prompt Manager</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <!-- 主容器 -->
+    <div class="container">
+      <!-- 顶部操作栏 -->
+      <header class="header">
+        <div class="search-container">
+          <input type="text" id="searchInput" placeholder="搜索提示词..." class="search-input" />
+          <button id="addBtn" class="icon-btn add-btn" title="添加提示词">+</button>
+        </div>
+      </header>
+
+      <!-- 标签筛选栏 -->
+      <div class="tag-filter" id="tagFilter">
+        <button class="tag-btn active" data-tag="all">全部</button>
+        <!-- 动态标签将插入到这里 -->
+      </div>
+
+      <!-- 提示词列表容器 -->
+      <main class="prompt-list" id="promptList">
+        <!-- 提示词卡片将动态插入到这里 -->
+        <div class="empty-state" id="emptyState">
+          <div class="empty-icon">📝</div>
+          <div class="empty-text">暂无提示词</div>
+          <div class="empty-subtext">点击 + 添加第一个提示词</div>
+        </div>
+      </main>
+
+      <!-- 底部操作栏 -->
+      <footer class="bottom-actions">
+        <div class="action-buttons">
+          <button id="importBtn" class="bottom-btn" title="导入">📥</button>
+          <button id="exportBtn" class="bottom-btn" title="导出">📤</button>
+          <button id="settingsBtn" class="bottom-btn" title="设置">⚙️</button>
+        </div>
+        <div class="status-info">
+          <span id="promptCount">共 0 条提示词</span>
+        </div>
+        <input type="file" id="fileInput" accept=".json" style="display: none" />
+      </footer>
+    </div>
+
+    <!-- 编辑提示词模态框 -->
+    <div class="modal-overlay" id="editModal">
+      <div class="modal">
+        <div class="modal-header">
+          <h3 id="modalTitle">添加提示词</h3>
+          <button class="close-btn" id="closeEditModal">×</button>
+        </div>
+        <div class="modal-body">
+          <form id="promptForm">
+            <div class="form-group">
+              <label for="titleInput">标题</label>
+              <input type="text" id="titleInput" required placeholder="请输入提示词标题" />
+            </div>
+            <div class="form-group">
+              <label for="contentInput">内容</label>
+              <textarea id="contentInput" rows="6" required placeholder="请输入提示词内容"></textarea>
+            </div>
+            <div class="form-group">
+              <label>标签选择</label>
+              <div class="preset-tags" id="presetTags">
+                <!-- 预置标签将动态插入 -->
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="cancelEditBtn" class="btn-secondary">取消</button>
+          <button type="button" id="saveBtn" class="btn-primary">保存</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 设置模态框 -->
+    <div class="modal-overlay" id="settingsModal">
+      <div class="modal">
+        <div class="modal-header">
+          <h3>设置</h3>
+          <button class="close-btn" id="closeSettingsModal">×</button>
+        </div>
+        <div class="modal-body">
+          <form id="settingsForm">
+            <div class="form-group">
+              <label>标签管理</label>
+              <div class="settings-tags" id="settingsTags">
+                <!-- 设置中的标签列表 -->
+              </div>
+              <div class="add-tag-input">
+                <input type="text" id="newTagInput" placeholder="添加新标签" />
+                <button type="button" id="addTagBtn" class="btn-small">添加</button>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="saveSettingsBtn" class="btn-primary">保存设置</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 删除确认对话框 -->
+    <div class="modal-overlay" id="deleteModal">
+      <div class="modal small">
+        <div class="modal-header">
+          <h3>确认删除</h3>
+        </div>
+        <div class="modal-body">
+          <p>确定要删除这个提示词吗？此操作不可撤销。</p>
+        </div>
+        <div class="modal-footer">
+          <button id="cancelDeleteBtn" class="btn-secondary">取消</button>
+          <button id="confirmDeleteBtn" class="btn-danger">删除</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 消息提示 -->
+    <div class="toast" id="toast">
+      <span id="toastMessage"></span>
+    </div>
+
+    <!-- 加载脚本 -->
+    <script src="js/utils.js"></script>
+    <script src="js/data.js"></script>
+    <script src="js/main.js"></script>
+  </body>
+</html>
