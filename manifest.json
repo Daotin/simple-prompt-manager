@@ -2,15 +2,18 @@
   "manifest_version": 3,
   "name": "Simple Prompt Manager",
   "version": "1.0.0",
-  "description": "极简提示词管理插件",
-  "permissions": [],
+  "description": "轻量级AI提示词管理工具，支持分类标签、搜索筛选、导入导出功能，玻璃拟态界面设计",
+  "author": "Your Name",
+  "homepage_url": "https://github.com/yourusername/prompt-extension",
+  "permissions": ["storage"],
   "action": {
     "default_popup": "popup.html",
-    "default_title": "Prompt Manager"
+    "default_title": "提示词管理器"
   },
   "icons": {
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
-  }
+  },
+  "minimum_edge_version": "88"
 }

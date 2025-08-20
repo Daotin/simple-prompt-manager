@@ -206,11 +206,6 @@ function searchPrompts(keyword) {
       return true;
     }
 
-    // 搜索标签
-    if (Array.isArray(prompt.tags)) {
-      return prompt.tags.some((tag) => tag.toLowerCase().includes(searchTerm));
-    }
-
     return false;
   });
 }

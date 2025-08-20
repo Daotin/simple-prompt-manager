@@ -271,17 +271,19 @@ function createPromptCard(prompt) {
       ? `<div class="prompt-tags">
          ${prompt.tags.map((tag) => `<span class="prompt-tag">${escapeHtml(tag)}</span>`).join('')}
         </div>`
-      : '';
+      : '<div class="prompt-tags"></div>';
 
   return `
     <div class="prompt-card" data-id="${prompt.id}">
       <div class="prompt-title" title="${escapeHtml(prompt.title)}">${escapeHtml(prompt.title)}</div>
       <div class="prompt-content" title="${escapeHtml(prompt.content)}">${escapeHtml(truncateText(prompt.content, 100))}</div>
-      ${tagsHtml}
-      <div class="prompt-actions">
-        <button class="prompt-action-btn copy-btn" data-action="copy" data-id="${prompt.id}" title="复制内容">📋</button>
-        <button class="prompt-action-btn edit-btn" data-action="edit" data-id="${prompt.id}" title="编辑">📝</button>
-        <button class="prompt-action-btn delete-btn delete" data-action="delete" data-id="${prompt.id}" title="删除">🗑️</button>
+      <div class="prompt-bottom">
+        ${tagsHtml}
+        <div class="prompt-actions">
+          <button class="prompt-action-btn copy-btn" data-action="copy" data-id="${prompt.id}" title="复制内容">📋</button>
+          <button class="prompt-action-btn edit-btn" data-action="edit" data-id="${prompt.id}" title="编辑">📝</button>
+          <button class="prompt-action-btn delete-btn delete" data-action="delete" data-id="${prompt.id}" title="删除">🗑️</button>
+        </div>
       </div>
     </div>
   `;
