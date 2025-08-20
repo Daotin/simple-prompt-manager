@@ -1,10 +1,10 @@
 {
   "manifest_version": 3,
   "name": "Simple Prompt Manager",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "轻量级AI提示词管理工具，支持分类标签、搜索筛选、导入导出功能，玻璃拟态界面设计",
-  "author": "Your Name",
-  "homepage_url": "https://github.com/yourusername/prompt-extension",
+  "author": "Daotin",
+  "homepage_url": "https://github.com/Daotin/simple-prompt-manager",
   "permissions": ["storage"],
   "action": {
     "default_popup": "popup.html",
