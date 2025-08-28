@@ -13,6 +13,10 @@ const DEFAULT_SETTINGS = {
   version: '1.0.0',
 };
 
+// 同步配置键（不放到导出数据里）
+const SYNC_STATE_KEY = 'simple_prompt_manager_sync_state';
+const SYNC_PAT_KEY = 'simple_prompt_manager_pat';
+
 /**
  * 从localStorage获取数据
  * @param {string} key - 存储键名
@@ -322,6 +326,38 @@ function exportData() {
   } catch (error) {
     console.error('导出数据失败:', error);
     return null;
+  }
+}
+
+// ========== 云同步：本地凭据与状态的简易读写（不纳入导出） ==========
+function getSyncCredentials() {
+  try {
+    const pat = localStorage.getItem(SYNC_PAT_KEY);
+    const state = localStorage.getItem(SYNC_STATE_KEY);
+    const parsed = state ? safeJsonParse(state, {}) : {};
+    return {
+      pat: pat ? safeJsonParse(pat, pat) : '',
+      gistId: parsed.gistId || '',
+    };
+  } catch (e) {
+    return { pat: '', gistId: '' };
+  }
+}
+
+function saveSyncCredentials({ pat, gistId }) {
+  try {
+    if (typeof pat === 'string') {
+      localStorage.setItem(SYNC_PAT_KEY, safeJsonStringify(pat, ''));
+    }
+    if (typeof gistId === 'string') {
+      const current = localStorage.getItem(SYNC_STATE_KEY);
+      const parsed = current ? safeJsonParse(current, {}) : {};
+      parsed.gistId = gistId;
+      localStorage.setItem(SYNC_STATE_KEY, safeJsonStringify(parsed, '{}'));
+    }
+    return true;
+  } catch (e) {
+    return false;
   }
 }
 

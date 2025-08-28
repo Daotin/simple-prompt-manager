@@ -6,6 +6,7 @@
   "author": "Daotin",
   "homepage_url": "https://github.com/Daotin/simple-prompt-manager",
   "permissions": ["storage"],
+  "host_permissions": ["https://api.github.com/*", "https://gist.githubusercontent.com/*"],
   "action": {
     "default_popup": "popup.html",
     "default_title": "提示词管理器"

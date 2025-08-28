@@ -98,6 +98,25 @@
                 <button type="button" id="addTagBtn" class="btn-small">添加</button>
               </div>
             </div>
+            <div class="form-group">
+              <label>云同步（GitHub Gist）</label>
+              <div class="form-group">
+                <input type="text" id="syncPatInput" placeholder="GitHub Token（仅 gist 权限）" />
+              </div>
+              <div class="form-group">
+                <input type="text" id="syncGistIdInput" placeholder="Gist ID（可留空，点击创建）" />
+              </div>
+              <div class="form-group" style="display: flex; gap: 8px; flex-wrap: wrap">
+                <button type="button" id="syncCreateBindBtn" class="btn-small">创建私有 Gist 并绑定</button>
+                <button type="button" id="syncValidateBtn" class="btn-small">校验绑定</button>
+                <button type="button" id="syncPullBtn" class="btn-small">云端覆盖本地</button>
+                <button type="button" id="syncPushBtn" class="btn-small">本地覆盖云端</button>
+              </div>
+              <div class="form-group" style="font-size: 12px; color: var(--text-secondary); display: flex; gap: 8px; align-items: center">
+                <span>状态：<b id="syncStatusText">未配置</b></span>
+                <span>最近同步：<span id="lastSyncTimeText">-</span></span>
+              </div>
+            </div>
           </form>
         </div>
         <div class="modal-footer">
@@ -130,6 +149,7 @@
     <!-- 加载脚本 -->
     <script src="js/utils.js"></script>
     <script src="js/data.js"></script>
+    <script src="js/sync.js"></script>
     <script src="js/main.js"></script>
   </body>
 </html>

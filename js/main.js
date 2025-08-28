@@ -71,6 +71,14 @@ function initElements() {
     addTagBtn: document.getElementById('addTagBtn'),
     saveSettingsBtn: document.getElementById('saveSettingsBtn'),
 
+    // 云同步 UI
+    syncPatInput: document.getElementById('syncPatInput'),
+    syncGistIdInput: document.getElementById('syncGistIdInput'),
+    syncCreateBindBtn: document.getElementById('syncCreateBindBtn'),
+    syncValidateBtn: document.getElementById('syncValidateBtn'),
+    syncPullBtn: document.getElementById('syncPullBtn'),
+    syncPushBtn: document.getElementById('syncPushBtn'),
+
     // 删除确认
     deleteModal: document.getElementById('deleteModal'),
     cancelDeleteBtn: document.getElementById('cancelDeleteBtn'),
@@ -127,6 +135,79 @@ function bindEvents() {
     }
   });
   elements.saveSettingsBtn.addEventListener('click', handleSaveSettings);
+
+  // 云同步事件
+  if (elements.syncCreateBindBtn) {
+    elements.syncCreateBindBtn.addEventListener('click', async () => {
+      try {
+        const pat = elements.syncPatInput.value && elements.syncPatInput.value.trim();
+        if (!pat) return showToast('请先填写 Token', 'error');
+        Sync.setCredentials({ pat });
+        elements.syncCreateBindBtn.disabled = true;
+        const { gistId } = await Sync.createAndBindGist();
+        elements.syncGistIdInput.value = gistId;
+        showToast('Gist 已创建并绑定', 'success');
+      } catch (e) {
+        showToast(String(e.message || e), 'error');
+      } finally {
+        elements.syncCreateBindBtn.disabled = false;
+      }
+    });
+  }
+
+  if (elements.syncValidateBtn) {
+    elements.syncValidateBtn.addEventListener('click', async () => {
+      try {
+        const pat = elements.syncPatInput.value && elements.syncPatInput.value.trim();
+        const gistId = elements.syncGistIdInput.value && elements.syncGistIdInput.value.trim();
+        if (!pat || !gistId) return showToast('请先填写 Token 和 Gist ID', 'error');
+        Sync.setCredentials({ pat, gistId });
+        const ok = await Sync.validateBinding();
+        showToast(ok ? '绑定有效' : '绑定无效', ok ? 'success' : 'error');
+      } catch (e) {
+        showToast(String(e.message || e), 'error');
+      }
+    });
+  }
+
+  if (elements.syncPullBtn) {
+    elements.syncPullBtn.addEventListener('click', async () => {
+      try {
+        const pat = elements.syncPatInput.value && elements.syncPatInput.value.trim();
+        const gistId = elements.syncGistIdInput.value && elements.syncGistIdInput.value.trim();
+        if (!pat || !gistId) return showToast('请先填写 Token 和 Gist ID', 'error');
+        Sync.setCredentials({ pat, gistId });
+        elements.syncPullBtn.disabled = true;
+        await Sync.pullOverrideLocal();
+        refreshPromptList();
+        updateTagFilter();
+        updatePresetTagsDisplay();
+        showToast('已用云端覆盖本地', 'success');
+      } catch (e) {
+        showToast(String(e.message || e), 'error');
+      } finally {
+        elements.syncPullBtn.disabled = false;
+      }
+    });
+  }
+
+  if (elements.syncPushBtn) {
+    elements.syncPushBtn.addEventListener('click', async () => {
+      try {
+        const pat = elements.syncPatInput.value && elements.syncPatInput.value.trim();
+        const gistId = elements.syncGistIdInput.value && elements.syncGistIdInput.value.trim();
+        if (!pat || !gistId) return showToast('请先填写 Token 和 Gist ID', 'error');
+        Sync.setCredentials({ pat, gistId });
+        elements.syncPushBtn.disabled = true;
+        await Sync.pushOverrideRemote();
+        showToast('已用本地覆盖云端', 'success');
+      } catch (e) {
+        showToast(String(e.message || e), 'error');
+      } finally {
+        elements.syncPushBtn.disabled = false;
+      }
+    });
+  }
 
   // 设置标签删除事件（事件委托）
   elements.settingsTags.addEventListener('click', (e) => {
@@ -216,6 +297,11 @@ function loadInitialData() {
   updatePresetTagsDisplay();
 
   console.log('初始数据加载完成');
+
+  // 同步：页面初始化后尝试静默拉取（若已配置）
+  if (window.Sync && typeof Sync.initOnLoad === 'function') {
+    Sync.initOnLoad();
+  }
 }
 
 /**
@@ -560,6 +646,14 @@ function showSettingsModal() {
   console.log('显示设置模态框，初始化临时标签:', tempPresetTags);
   updateSettingsTagsDisplay();
   elements.settingsModal.classList.add('show');
+
+  // 初始化同步输入框
+  try {
+    const cfg = Sync && typeof Sync.getConfig === 'function' ? Sync.getConfig() : { pat: '', gistId: '' };
+    if (elements.syncPatInput) elements.syncPatInput.value = cfg.pat || '';
+    if (elements.syncGistIdInput) elements.syncGistIdInput.value = cfg.gistId || '';
+    if (Sync && typeof Sync.updateSyncStatusUI === 'function') Sync.updateSyncStatusUI();
+  } catch (_) {}
 }
 
 /**
